@@ -18,10 +18,6 @@ app.add_middleware(
 # Incluir rutas
 app.include_router(users.router, prefix="/api/users")
 
-@app.get("/")
-def read_root():
-    return {"message": "User Manager API"}
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=settings.API_PORT)

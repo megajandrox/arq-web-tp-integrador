@@ -5,7 +5,7 @@ fastapi==0.115.12
 greenlet==3.2.1
 h11==0.16.0
 idna==3.10
-# Editable install with no version control (my_minimal_package==0.1.0)
+# Editable install with no version control (api_user_manager_package==0.1.0)
 -e /home/megajandro/workspace/arq-web-tp-integrador/api
 pydantic==2.11.3
 pydantic-settings==2.9.1
