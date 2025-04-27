@@ -1,8 +1,11 @@
-version: "3.8"
+version: "3.9"
+
 services:
   api:
-    build: ./api
-    env_file:
-      - ./api/.env
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "9000:8000"
+    volumes:
+      - ./api:/app/api
