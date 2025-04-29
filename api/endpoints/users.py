@@ -1,44 +1,48 @@
-from fastapi import APIRouter, HTTPException, Depends
-from fastapi import status
+from fastapi import APIRouter, HTTPException, Depends, status
+from sqlalchemy.orm import Session
+from api.core.database import get_db
+from api.core.models import User
 from api.core.repository import UserRepository
 from api.core.services import UserService
-from api.endpoints.schema import UserCreate
+from api.endpoints.schema import UserCreate, UserResponse
+from typing import List
 
-router = APIRouter()
+router = APIRouter(prefix="/users", tags=["users"])
 
-# Inyección de dependencia de UserService
-def get_user_service(repo: UserRepository = Depends()) -> UserService:
-    return UserService(repo)
+# Configuración correcta de las dependencias
+def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
+    return UserRepository(User, db)
 
-@router.get("/", response_model=list[UserCreate])
-def get_all_users(user_service: UserService = Depends(get_user_service)):
-    users = user_service.get_all_users()
-    if not users:
-        raise HTTPException(status_code=404, detail="No users found")
-    return users
+def get_user_service(repository: UserRepository = Depends(get_user_repository)) -> UserService:
+    return UserService(repository)
 
-@router.get("/{user_id}")
-def get_user(user_id: str, user_service: UserService = Depends(get_user_service)):
-    user = user_service.get_user(user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
+@router.get("/", response_model=List[UserResponse])
+def get_all_users(service: UserService = Depends(get_user_service)):
+    return service.get_all()
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_user(user: UserCreate, user_service: UserService = Depends(get_user_service)):
-    created_user = user_service.create_user(user)
-    return created_user
+@router.get("/{user_id}", response_model=UserResponse)
+def get_user(user_id: int, service: UserService = Depends(get_user_service)):
+    return service.get_by_id(user_id)
 
-@router.put("/{user_id}", status_code=status.HTTP_202_ACCEPTED)
-async def update_user(user_id: str, user: UserCreate, user_service: UserService = Depends(get_user_service)):
-    updated_user = user_service.update_user(user_id, user)
-    if not updated_user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return updated_user
+@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def create_user(
+    user: UserCreate,
+    service: UserService = Depends(get_user_service)
+):
+    return service.create(user)
+
+@router.put("/{user_id}", response_model=UserResponse)
+def update_user(
+    user_id: int,
+    user: UserCreate,
+    service: UserService = Depends(get_user_service)
+):
+    return service.update(user_id, user)
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(user_id: str, user_service: UserService = Depends(get_user_service)):
-    success = user_service.delete_user(user_id)
-    if not success:
-        raise HTTPException(status_code=404, detail="User not found")
-    return  # NO CONTENT
+def delete_user(
+    user_id: int,
+    service: UserService = Depends(get_user_service)
+):
+    service.delete(user_id)
+    return None

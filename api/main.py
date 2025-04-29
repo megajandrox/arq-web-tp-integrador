@@ -16,7 +16,18 @@ app.add_middleware(
 )
 
 # Incluir rutas
-app.include_router(users.router, prefix="/api/users")
+app.include_router(users.router, prefix="/api/v1", tags=["users"])
+from fastapi.openapi.utils import get_openapi
+
+@app.get("/debug-openapi")
+def debug_openapi():
+    openapi_schema = get_openapi(
+        title="My API",
+        version="1.0.0",
+        routes=app.routes,
+    )
+    print(openapi_schema)  # Imprime el esquema en la consola
+    return openapi_schema
 
 if __name__ == "__main__":
     import uvicorn
