@@ -1,3 +1,4 @@
+from typing import List
 from pydantic import BaseModel, ConfigDict
 
 class UserCreate(BaseModel):
@@ -24,3 +25,22 @@ class RoleResponse(BaseModel):
     description: str | None = None
     
     model_config = ConfigDict(from_attributes=True)
+
+class UserRoleAssign(BaseModel):
+    user_id: int
+    role_id: int
+
+class UserRolesResponse(BaseModel):
+    user_id: int
+    roles: List[RoleResponse]
+    class Config:
+        orm_mode = True
+    #model_config = ConfigDict(from_attributes=True)
+
+
+class RoleUsersResponse(BaseModel):
+    role_id: int
+    users: List[UserResponse]
+    class Config:
+        orm_mode = True
+    #cmodel_config = ConfigDict(from_attributes=True)

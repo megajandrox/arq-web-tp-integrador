@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.endpoints import users, roles
 from api.core.settings import Settings
+from api.endpoints.users import router as users_router
+from api.endpoints.roles import router as roles_router
+from api.endpoints.user_roles import router as user_roles_router
 
 settings = Settings()
 
@@ -16,8 +19,10 @@ app.add_middleware(
 )
 
 # Incluir rutas
-app.include_router(users.router, prefix="/api/v1", tags=["users"])
-app.include_router(roles.router, prefix="/api/v1", tags=["roles"])
+app.include_router(users_router)
+app.include_router(roles_router)
+app.include_router(user_roles_router)
+
 from fastapi.openapi.utils import get_openapi
 
 @app.get("/debug-openapi")

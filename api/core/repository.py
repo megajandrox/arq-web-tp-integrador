@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from api.core.models import Role, User
 from api.endpoints.schema import RoleCreate, UserCreate
+from api.core.models import user_roles
+from sqlalchemy import insert, delete
 
 ModelType = TypeVar("ModelType")
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -54,3 +56,29 @@ class UserRepository(BaseRepository[User, UserCreate]):
 
 class RoleRepository(BaseRepository[Role, RoleCreate]):
     pass
+
+
+class UserRoleRepository:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def assign_role_to_user(self, user_id: int, role_id: int):
+        stmt = insert(user_roles).values(user_id=user_id, role_id=role_id)
+        self.db.execute(stmt)
+        self.db.commit()
+
+    def remove_role_from_user(self, user_id: int, role_id: int):
+        stmt = delete(user_roles).where(
+            user_roles.c.user_id == user_id,
+            user_roles.c.role_id == role_id
+        )
+        self.db.execute(stmt)
+        self.db.commit()
+
+    def get_roles_by_user(self, user_id: int):
+        stmt = self.db.query(user_roles).filter(user_roles.c.user_id == user_id)
+        return stmt.all()
+
+    def get_users_by_role(self, role_id: int):
+        stmt = self.db.query(user_roles).filter(user_roles.c.role_id == role_id)
+        return stmt.all()
