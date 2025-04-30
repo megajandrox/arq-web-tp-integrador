@@ -93,3 +93,7 @@ Puedes explorar los endpoints disponibles utilizando la documentación interacti
 - Verificar de que el archivo `.env` contenga las configuraciones correctas para la base de datos y otros parámetros.
 - Para realizar cambios en los modelos de la base de datos, se debe ejecutar nuevamente el script `create_db.py` para aplicar los cambios.
 - Para popular la base de datos con valores dummy utilizar `populate_data.py`.
+
+**Documentación adicional** con enlaces a:
+   - [patterns.md](http://_vscodecontentref_/1): Documentación sobre los patrones de diseño aplicados.
+   - [estructura.md](http://_vscodecontentref_/2): Descripción de la estructura del proyecto.
