@@ -1,11 +1,10 @@
 from typing import Generic, TypeVar, List
 from fastapi import HTTPException, status
 from pydantic import BaseModel
-from api.core.models import User
-from api.core.repository import BaseRepository, UserRepository
-from api.endpoints.schema import UserCreate, UserResponse
+from api.core.models import Role, User
+from api.core.repository import BaseRepository, RoleRepository, UserRepository
+from api.endpoints.schema import RoleCreate, RoleResponse, UserCreate, UserResponse
 
-# Define generic types
 ModelType = TypeVar("ModelType")
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
@@ -81,3 +80,27 @@ class UserService(BaseService[User, UserCreate]):
         """Update user with response schema conversion."""
         user = super().update(user_id, user_in)
         return UserResponse.model_validate(user)
+    
+class RoleService(BaseService[Role, RoleCreate]):
+    def __init__(self, repository: RoleRepository):
+        super().__init__(repository)
+
+    def get_all(self) -> List[RoleResponse]:
+        """Get all roles with response schema conversion."""
+        roles = super().get_all()
+        return [RoleResponse.model_validate(role) for role in roles] 
+    
+    def get_by_id(self, role_id: int) -> RoleResponse:
+        """Get role by ID with response schema conversion."""
+        role = super().get_by_id(role_id)
+        return RoleResponse.model_validate(role)
+
+    def create(self, role_in: RoleCreate) -> RoleResponse:
+        """Create role with response schema conversion."""
+        role = super().create(role_in)
+        return RoleResponse.model_validate(role)
+
+    def update(self, role_id: int, role_in: RoleCreate) -> RoleResponse:
+        """Update role with response schema conversion."""
+        user = super().update(role_id, role_in)
+        return RoleResponse.model_validate(user)

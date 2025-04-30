@@ -1,10 +1,9 @@
 from typing import Generic, Type, TypeVar, List, Optional
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from api.core.models import User
-from api.endpoints.schema import UserCreate
+from api.core.models import Role, User
+from api.endpoints.schema import RoleCreate, UserCreate
 
-# Define generic types
 ModelType = TypeVar("ModelType")
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 
@@ -51,4 +50,7 @@ class BaseRepository(Generic[ModelType, CreateSchemaType]):
 
 
 class UserRepository(BaseRepository[User, UserCreate]):
+    pass
+
+class RoleRepository(BaseRepository[Role, RoleCreate]):
     pass

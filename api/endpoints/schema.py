@@ -11,3 +11,16 @@ class UserResponse(BaseModel):
     username: str
     email: str
     model_config = ConfigDict(from_attributes=True)
+
+class RoleCreate(BaseModel):
+    name: str
+    description: str | None = None
+    
+    model_config = ConfigDict(from_attributes=True)
+
+class RoleResponse(BaseModel):
+    id: int
+    name: str
+    description: str | None = None
+    
+    model_config = ConfigDict(from_attributes=True)

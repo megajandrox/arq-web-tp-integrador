@@ -9,7 +9,6 @@ from typing import List
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-# Configuración correcta de las dependencias
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
     return UserRepository(User, db)
 
