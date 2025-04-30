@@ -5,7 +5,7 @@ from api.core.models import Role, User
 from api.core.repository import RoleRepository, UserRepository, UserRoleRepository
 from api.core.services import RoleService, UserRoleService, UserService
 from api.endpoints.roles import get_role_service
-from api.endpoints.schema import RoleResponse, RoleUsersResponse, UserResponse, UserRolesResponse
+from api.endpoints.schema import RoleResponse, RoleUsersResponse, UserResponse, UserRoleAssign, UserRolesResponse
 from api.endpoints.users import get_user_service
 
 router = APIRouter(prefix="/user-roles", tags=["user_roles"])
@@ -18,11 +18,10 @@ def get_user_role_service(repository: UserRoleRepository = Depends(get_user_role
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def assign_role_to_user(
-    user_id: int,
-    role_id: int,
+    user_role: UserRoleAssign,
     service: UserRoleService = Depends(get_user_role_service)
 ):
-    service.assign_role_to_user(user_id, role_id)
+    service.assign_role_to_user(user_role.user_id, user_role.role_id)
     return {"message": "Role assigned to user successfully"}
 
 @router.delete("/", status_code=status.HTTP_204_NO_CONTENT)
@@ -55,12 +54,9 @@ def get_users_by_role(
     service: UserRoleService = Depends(get_user_role_service),
     service_user: UserService = Depends(get_user_service)
 ):
-    # debe retornar una lista de usuario que tiene un rol
     user_roles = service.get_users_by_role(role_id)
     if not user_roles:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No users found for this role")
-    # Convertir a la respuesta deseada
     users = [service_user.get_by_id(user_role.user_id) for user_role in user_roles]
     users_response = [UserResponse.from_orm(user) for user in users]
-    # Retornar la respuesta
     return RoleUsersResponse(role_id=role_id, users=users_response)

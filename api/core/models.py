@@ -22,5 +22,9 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(100), unique=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    is_active = Column(Integer, default=1, nullable=False)
+    created_at = Column(String, nullable=False)
+    updated_at = Column(String, nullable=False)
 
     roles = relationship("Role", secondary=user_roles, back_populates="users")

@@ -1,16 +1,23 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, ConfigDict
 
 class UserCreate(BaseModel):
     username: str
     email: str
-    
+    password_hash: str
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
+    is_active: Optional[int] = None
     model_config = ConfigDict(from_attributes=True)
 
 class UserResponse(BaseModel):
     id: int
     username: str
     email: str
+    is_active: int
+    created_at: str
+    updated_at: str
+
     model_config = ConfigDict(from_attributes=True)
 
 class RoleCreate(BaseModel):
@@ -35,7 +42,6 @@ class UserRolesResponse(BaseModel):
     roles: List[RoleResponse]
     class Config:
         orm_mode = True
-    #model_config = ConfigDict(from_attributes=True)
 
 
 class RoleUsersResponse(BaseModel):
@@ -43,4 +49,3 @@ class RoleUsersResponse(BaseModel):
     users: List[UserResponse]
     class Config:
         orm_mode = True
-    #cmodel_config = ConfigDict(from_attributes=True)

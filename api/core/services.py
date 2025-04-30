@@ -1,9 +1,11 @@
+from datetime import datetime
 from typing import Generic, TypeVar, List
 from fastapi import HTTPException, status
 from pydantic import BaseModel
 from api.core.models import Role, User
 from api.core.repository import BaseRepository, RoleRepository, UserRepository, UserRoleRepository
 from api.endpoints.schema import RoleCreate, RoleResponse, UserCreate, UserResponse
+from api.lib.security import hash_password
 
 ModelType = TypeVar("ModelType")
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -65,6 +67,12 @@ class UserService(BaseService[User, UserCreate]):
         return UserResponse.model_validate(user)
 
     def create(self, user_in: UserCreate) -> UserResponse:
+        now = datetime.now()
+        user_in.created_at = now
+        user_in.updated_at = now
+        user_in.is_active = 1
+        user_in.password_hash = hash_password(user_in.password_hash)
+        print(user_in)
         user = super().create(user_in)
         return UserResponse.model_validate(user)
 
@@ -85,6 +93,7 @@ class RoleService(BaseService[Role, RoleCreate]):
         return RoleResponse.model_validate(role)
 
     def create(self, role_in: RoleCreate) -> RoleResponse:
+        print(f" Creating role {role_in}")
         role = super().create(role_in)
         return RoleResponse.model_validate(role)
 

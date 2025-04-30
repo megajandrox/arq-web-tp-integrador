@@ -30,7 +30,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes componentes:
 1. Crea las tablas necesarias en la base de datos ejecutando el script `create_db.py`:
 
    ```bash
-   python scripts/create_db.py
+   PYTHONPATH=. python scripts/create_db.py
    ```
 
 2. Verifica que se haya creado el archivo `user_manager.db` en el directorio raíz del proyecto.
@@ -54,10 +54,32 @@ Antes de comenzar, asegúrate de tener instalados los siguientes componentes:
 2. Ejecuta la aplicación FastAPI:
 
    ```bash
-   python api/main.py
+   PYTHONPATH=. python api/main.py
    ```
 
 3. La API estará disponible en [http://localhost:5000](http://localhost:5000).
+
+## Popular datos en la base de datos
+
+1. Instala `jq`, una herramienta necesaria para procesar las respuestas JSON del script:
+
+   - **Debian/Ubuntu**:
+     ```bash
+     sudo apt-get install jq
+     ```
+
+2. Una vez que la aplicación esté en ejecución (ya sea localmente o con Docker), ejecuta el script `populate_data.py` para popular datos en las entidades `users`, `roles` y `user_roles`:
+
+   ```bash
+   PYTHONPATH=. python scripts/populate_data.py
+   ```
+
+3. El script creará automáticamente:
+   - Roles (`Admin`, `User`).
+   - Usuarios (`pepe`, `cacho`).
+   - Asignará roles a los usuarios.
+
+4. Verifica los datos creados accediendo a los endpoints correspondientes o revisando la salida del script.
 
 ## Endpoints disponibles
 
@@ -68,5 +90,6 @@ Puedes explorar los endpoints disponibles utilizando la documentación interacti
 
 ## Notas adicionales
 
-- Asegúrate de que el archivo `.env` contenga las configuraciones correctas para la base de datos y otros parámetros.
-- Si necesitas realizar cambios en los modelos de la base de datos, recuerda ejecutar nuevamente el script `create_db.py` para aplicar los cambios.
+- Verificar de que el archivo `.env` contenga las configuraciones correctas para la base de datos y otros parámetros.
+- Para realizar cambios en los modelos de la base de datos, se debe ejecutar nuevamente el script `create_db.py` para aplicar los cambios.
+- Para popular la base de datos con valores dummy utilizar `populate_data.py`.
