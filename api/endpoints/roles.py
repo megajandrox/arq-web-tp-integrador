@@ -4,7 +4,7 @@ from api.core.database import get_db
 from api.core.models import Role
 from api.core.repository import RoleRepository
 from api.core.services import RoleService
-from api.endpoints.schema import RoleCreate, RoleResponse
+from api.endpoints.schema import RoleCreate, RolePermissionAssign, RoleResponse
 from typing import List
 
 router = APIRouter(prefix="/roles", tags=["roles"])
@@ -12,7 +12,8 @@ router = APIRouter(prefix="/roles", tags=["roles"])
 def get_role_repository(db: Session = Depends(get_db)) -> RoleRepository:
     return RoleRepository(Role, db)
 
-def get_role_service(repository: RoleRepository = Depends(get_role_repository)) -> RoleService:
+def get_role_service(db: Session = Depends(get_db)) -> RoleService:
+    repository = RoleRepository(Role, db)
     return RoleService(repository)
 
 @router.get("/", response_model=List[RoleResponse])
@@ -45,3 +46,19 @@ def delete_role(
 ):
     service.delete(role_id)
     return None
+
+@router.post("/{role_id}/permissions", status_code=status.HTTP_201_CREATED)
+def assign_permission_to_role(
+    role_permission: RolePermissionAssign,
+    service: RoleService = Depends(get_role_service)
+):
+    service.assign_permission_to_role(role_permission.role_id, role_permission.permission_id)
+    return {"message": "Permission assigned to role successfully"}
+
+@router.delete("/{role_id}/permissions", status_code=status.HTTP_204_NO_CONTENT)
+def remove_permission_from_role(
+    role_permission: RolePermissionAssign,
+    service: RoleService = Depends(get_role_service)
+):
+    service.remove_permission_from_role(role_permission.role_id, role_permission.permission_id)
+    return {"message": "Permission removed from role successfully"}

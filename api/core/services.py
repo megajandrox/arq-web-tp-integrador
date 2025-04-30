@@ -2,9 +2,9 @@ from datetime import datetime
 from typing import Generic, TypeVar, List
 from fastapi import HTTPException, status
 from pydantic import BaseModel
-from api.core.models import Role, User
+from api.core.models import Permission, Role, User
 from api.core.repository import BaseRepository, RoleRepository, UserRepository, UserRoleRepository
-from api.endpoints.schema import RoleCreate, RoleResponse, UserCreate, UserResponse
+from api.endpoints.schema import Link, PermissionCreate, PermissionResponse, RoleCreate, RoleResponse, UserCreate, UserResponse
 from api.lib.security import hash_password
 
 ModelType = TypeVar("ModelType")
@@ -64,7 +64,14 @@ class UserService(BaseService[User, UserCreate]):
     
     def get_by_id(self, user_id: int) -> UserResponse:
         user = super().get_by_id(user_id)
-        return UserResponse.model_validate(user)
+        user_response = UserResponse.model_validate(user)
+        user_response.links = [
+            Link(rel= "self", href= f"/users/{user_id}"),
+            Link(rel= "roles", href= f"/user-roles/roles/{user_id}"),
+            Link(rel= "update", href= f"/users/{user_id}"),
+            Link(rel= "delete", href= f"/users/{user_id}")
+        ]
+        return user_response
 
     def create(self, user_in: UserCreate) -> UserResponse:
         now = datetime.now()
@@ -90,8 +97,16 @@ class RoleService(BaseService[Role, RoleCreate]):
     
     def get_by_id(self, role_id: int) -> RoleResponse:
         role = super().get_by_id(role_id)
-        return RoleResponse.model_validate(role)
-
+        role_response = RoleResponse.model_validate(role)
+        role_response.links = [
+            Link(rel= "self", href= f"/roles/{role_id}"),
+            Link(rel= "permissions", href= f"/roles/{role_id}/permissions"),
+            Link(rel= "users", href= f"/user-roles/users/{role_id}"),
+            Link(rel= "update", href= f"/roles/{role_id}"),
+            Link(rel= "delete", href= f"/roles/{role_id}")
+        ]
+        return role_response
+       
     def create(self, role_in: RoleCreate) -> RoleResponse:
         print(f" Creating role {role_in}")
         role = super().create(role_in)
@@ -100,6 +115,18 @@ class RoleService(BaseService[Role, RoleCreate]):
     def update(self, role_id: int, role_in: RoleCreate) -> RoleResponse:
         user = super().update(role_id, role_in)
         return RoleResponse.model_validate(user)
+    
+    def assign_permission_to_role(self, role_id: int, permission_id: int):
+        """
+        Asigna un permiso a un rol.
+        """
+        self.repository.assign_permission_to_role(role_id, permission_id)
+
+    def remove_permission_from_role(self, role_id: int, permission_id: int):
+        """
+        Elimina un permiso de un rol.
+        """
+        self.repository.remove_permission_from_role(role_id, permission_id)
 
 
 class UserRoleService:
@@ -117,3 +144,23 @@ class UserRoleService:
 
     def get_users_by_role(self, role_id: int):
         return self.repository.get_users_by_role(role_id)
+
+class PermissionService(BaseService[Permission, PermissionCreate]):
+    def __init__(self, repository: BaseRepository[Permission, PermissionCreate]):
+        super().__init__(repository)
+
+    def get_all(self) -> List[PermissionResponse]:
+        permissions = super().get_all()
+        return [PermissionResponse.model_validate(permission) for permission in permissions]
+
+    def get_by_id(self, permission_id: int) -> PermissionResponse:
+        permission = super().get_by_id(permission_id)
+        permission_response = PermissionResponse.model_validate(permission)
+        permission_response.links = [
+            Link(rel= "self", href= f"/permissions/{permission_id}")
+        ]
+        return permission_response
+
+    def create(self, permission_in: PermissionCreate) -> PermissionResponse:
+        permission = super().create(permission_in)
+        return PermissionResponse.model_validate(permission)

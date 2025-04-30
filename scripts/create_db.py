@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 from api.core.database import Base, engine
-from api.core.models import User, user_roles, Role # ¡Este import es crucial!
+from api.core.models import User, user_roles, Role, Permission, role_permissions # ¡Este import es crucial!
 
 sys.path.append(str(Path(__file__).parent.parent))
 

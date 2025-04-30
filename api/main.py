@@ -5,6 +5,7 @@ from api.core.settings import Settings
 from api.endpoints.users import router as users_router
 from api.endpoints.roles import router as roles_router
 from api.endpoints.user_roles import router as user_roles_router
+from api.endpoints.permissions import router as permissions_router
 
 settings = Settings()
 
@@ -22,6 +23,7 @@ app.add_middleware(
 app.include_router(users_router)
 app.include_router(roles_router)
 app.include_router(user_roles_router)
+app.include_router(permissions_router)
 
 from fastapi.openapi.utils import get_openapi
 
@@ -32,7 +34,7 @@ def debug_openapi():
         version="1.0.0",
         routes=app.routes,
     )
-    print(openapi_schema)  # Imprime el esquema en la consola
+    print(openapi_schema)
     return openapi_schema
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from api.core.models import Role, User
 from api.endpoints.schema import RoleCreate, UserCreate
-from api.core.models import user_roles
+from api.core.models import user_roles, role_permissions
 from sqlalchemy import insert, delete
 
 ModelType = TypeVar("ModelType")
@@ -55,7 +55,27 @@ class UserRepository(BaseRepository[User, UserCreate]):
     pass
 
 class RoleRepository(BaseRepository[Role, RoleCreate]):
-    pass
+    def __init__(self, model: Role, db: Session):
+        super().__init__(model, db)
+
+    def assign_permission_to_role(self, role_id: int, permission_id: int):
+        """
+        Asigna un permiso a un rol.
+        """
+        stmt = role_permissions.insert().values(role_id=role_id, permission_id=permission_id)
+        self.db.execute(stmt)
+        self.db.commit()
+
+    def remove_permission_from_role(self, role_id: int, permission_id: int):
+        """
+        Elimina un permiso de un rol.
+        """
+        stmt = role_permissions.delete().where(
+            role_permissions.c.role_id == role_id,
+            role_permissions.c.permission_id == permission_id
+        )
+        self.db.execute(stmt)
+        self.db.commit()
 
 
 class UserRoleRepository:

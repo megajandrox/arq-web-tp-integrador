@@ -3,6 +3,18 @@ import json
 
 BASE_URL = "http://localhost:5000"
 
+def create_permission(name, description):
+    response = requests.post(
+        f"{BASE_URL}/permissions/",
+        headers={"Content-Type": "application/json"},
+        json={"name": name, "description": description},
+    )
+    if response.status_code == 201:
+        return response.json()
+    else:
+        print(f"Error al crear permiso {name}: {response.json()}")
+        return None
+
 def create_role(name, description):
     json = {
         "name": name,
@@ -47,6 +59,15 @@ def assign_role_to_user(user_id, role_id):
     if response.status_code != 201:
         print(f"Error al asignar rol {role_id} al usuario {user_id}: {response.json()}")
 
+def assign_permission_to_role(role_id, permission_id):
+    response = requests.post(
+        f"{BASE_URL}/roles/{role_id}/permissions",
+        headers={"Content-Type": "application/json"},
+        json={"role_id": role_id, "permission_id": permission_id},
+    )
+    if response.status_code != 201:
+        print(f"Error al asignar permiso {permission_id} al rol {role_id}: {response.json()}")
+
 def get_roles_by_user(user_id):
     response = requests.get(f"{BASE_URL}/user-roles/roles/{user_id}")
     if response.status_code == 200:
@@ -76,6 +97,24 @@ def main():
     role_admin_id = role_admin["id"]
     role_user_id = role_user["id"]
     print(f"Roles creados: Admin ID={role_admin_id}, User ID={role_user_id}")
+
+    print("Creando permisos...")
+    permission_read = create_permission("read", "Permission to read data")
+    permission_write = create_permission("write", "Permission to write data")
+
+    if not permission_read or not permission_write:
+        print("Error al crear permisos. Abortando.")
+        return
+
+    permission_read_id = permission_read["id"]
+    permission_write_id = permission_write["id"]
+    print(f"Permisos creados: Read ID={permission_read_id}, Write ID={permission_write_id}")
+
+    print("Asignando permisos a roles...")
+    assign_permission_to_role(role_admin_id, permission_read_id)
+    assign_permission_to_role(role_admin_id, permission_write_id)
+    assign_permission_to_role(role_user_id, permission_read_id)
+    print("Permisos asignados a roles.")
 
     print("Creando usuarios...")
     user_pepe = create_user("pepe", "pepe@example.com", "hashedpassword1")
