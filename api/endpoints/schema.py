@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -9,8 +10,8 @@ class UserCreate(BaseModel):
     username: str
     email: str
     password_hash: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
     is_active: Optional[int] = None
     model_config = ConfigDict(from_attributes=True)
 
@@ -19,15 +20,14 @@ class UserResponse(BaseModel):
     username: str
     email: str
     is_active: int
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
     links: List[Link] = Field(default_factory=list)
     model_config = ConfigDict(from_attributes=True)
 
 class PermissionCreate(BaseModel):
     name: str
     description: Optional[str] = None
-
     model_config = ConfigDict(from_attributes=True)
 
 class PermissionResponse(BaseModel):
@@ -40,7 +40,6 @@ class PermissionResponse(BaseModel):
 class RoleCreate(BaseModel):
     name: str
     description: Optional[str] = None
-
     model_config = ConfigDict(from_attributes=True)
 
 class RoleResponse(BaseModel):
@@ -62,12 +61,10 @@ class UserRoleAssign(BaseModel):
 class UserRolesResponse(BaseModel):
     user_id: int
     roles: List[RoleResponse]
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class RoleUsersResponse(BaseModel):
     role_id: int
     users: List[UserResponse]
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

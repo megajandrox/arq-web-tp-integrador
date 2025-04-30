@@ -45,3 +45,4 @@ temp/
 data/
 *.sqlite
 *.csv # Si son generados y no esenciales
+test.db

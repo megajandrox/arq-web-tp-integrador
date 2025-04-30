@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.endpoints import users, roles
 from api.core.settings import Settings
 from api.endpoints.users import router as users_router
 from api.endpoints.roles import router as roles_router

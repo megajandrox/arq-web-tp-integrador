@@ -1,8 +1,8 @@
 from typing import Generic, Type, TypeVar, List, Optional
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from api.core.models import Role, User
-from api.endpoints.schema import RoleCreate, UserCreate
+from api.core.models import Permission, Role, User
+from api.endpoints.schema import PermissionCreate, RoleCreate, UserCreate
 from api.core.models import user_roles, role_permissions
 from sqlalchemy import insert, delete
 
@@ -54,6 +54,7 @@ class BaseRepository(Generic[ModelType, CreateSchemaType]):
 class UserRepository(BaseRepository[User, UserCreate]):
     pass
 
+
 class RoleRepository(BaseRepository[Role, RoleCreate]):
     def __init__(self, model: Role, db: Session):
         super().__init__(model, db)
@@ -102,3 +103,22 @@ class UserRoleRepository:
     def get_users_by_role(self, role_id: int):
         stmt = self.db.query(user_roles).filter(user_roles.c.role_id == role_id)
         return stmt.all()
+
+class PermissionRepository(BaseRepository[Permission, PermissionCreate]):
+    def update(self, permission_id: int, permission_in: PermissionCreate) -> Permission:
+        permission = self.db.query(Permission).filter(Permission.id == permission_id).first()
+        if not permission:
+            return None
+        for key, value in permission_in.dict().items():
+            setattr(permission, key, value)
+        self.db.commit()
+        self.db.refresh(permission)
+        return permission
+
+    def delete(self, permission_id: int) -> bool:
+        permission = self.db.query(Permission).filter(Permission.id == permission_id).first()
+        if not permission:
+            return False
+        self.db.delete(permission)
+        self.db.commit()
+        return True

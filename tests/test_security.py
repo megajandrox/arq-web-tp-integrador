@@ -1,4 +1,4 @@
-from api.lib.security import hash_password, verify_password
+from api.helpers.security import hash_password, verify_password
 
 def test_hash_password():
     password = "my_secure_password"
