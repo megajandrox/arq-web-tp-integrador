@@ -1,5 +1,9 @@
 # Arquitectura Web TP Integrador
 
+![Run Tests](https://github.com/megajandrox/arq-web-tp-integrador/actions/workflows/tests.yml/badge.svg?branch=main)
+
+Proyecto de arquitectura web con FastAPI y React.
+
 Este proyecto es una aplicación web basada en FastAPI para la gestión de usuarios.
 
 ## Requisitos previos
