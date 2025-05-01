@@ -54,7 +54,6 @@ class BaseRepository(Generic[ModelType, CreateSchemaType]):
 class UserRepository(BaseRepository[User, UserCreate]):
     pass
 
-
 class RoleRepository(BaseRepository[Role, RoleCreate]):
     def __init__(self, model: Role, db: Session):
         super().__init__(model, db)
@@ -109,7 +108,7 @@ class PermissionRepository(BaseRepository[Permission, PermissionCreate]):
         permission = self.db.query(Permission).filter(Permission.id == permission_id).first()
         if not permission:
             return None
-        for key, value in permission_in.dict().items():
+        for key, value in permission_in.model_dump().items():
             setattr(permission, key, value)
         self.db.commit()
         self.db.refresh(permission)

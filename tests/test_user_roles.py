@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from api.core.models import Base, User, Role, user_roles
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test-user-roles.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -40,9 +40,11 @@ def setup_test_user_roles():
 
         yield
     finally:
-        db.query(user_roles).delete()
         db.query(Role).delete()
         db.query(User).delete()
+        db.commit()
+
+        db.execute(user_roles.delete())
         db.commit()
         db.close()
 
