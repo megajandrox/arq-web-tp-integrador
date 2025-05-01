@@ -19,7 +19,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes componentes:
 1. Clona este repositorio:
 
    ```bash
-   git clone <URL_DEL_REPOSITORIO>
+   git clone git@github.com:megajandrox/arq-web-tp-integrador.git
    cd arq-web-tp-integrador
    ```
 
