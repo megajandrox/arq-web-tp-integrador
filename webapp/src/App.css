@@ -4,3 +4,43 @@
   padding: 2rem;
   text-align: center;
 }
+
+/* Contenedor principal */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+.app-header {
+  width: 100%;
+  z-index: 1100;
+}
+
+.app-title {
+  flex-grow: 1;
+}
+
+.app-user {
+  font-size: 1rem;
+}
+
+/* Layout */
+.app-layout {
+  display: flex;
+  flex-grow: 1;
+  margin-top: 64px;
+}
+
+/* Contenido principal */
+.app-main {
+  flex-grow: 1;
+  padding: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.table-container {
+  width: 100%;
+}

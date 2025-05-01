@@ -17,21 +17,21 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import '@/styles/TableStyles.css';
 
-function UserList() {
-  const [users, setUsers] = useState([]);
+function PermissionList() {
+  const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('/api/users')
+    fetch('/api/permissions')
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Error al obtener los usuarios');
+          throw new Error('Error al obtener los permisos');
         }
         return response.json();
       })
       .then((data) => {
-        setUsers(data);
+        setPermissions(data);
         setLoading(false);
       })
       .catch((err) => {
@@ -55,44 +55,38 @@ function UserList() {
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
-              <TableCell>Nombre de Usuario</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Activo</TableCell>
-              <TableCell>Fecha de Creación</TableCell>
-              <TableCell>Fecha de Actualización</TableCell>
+              <TableCell>Nombre del Permiso</TableCell>
+              <TableCell>Descripción</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell>{user.id}</TableCell>
-                <TableCell>{user.username}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.is_active ? 'Sí' : 'No'}</TableCell>
-                <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
-                <TableCell>{new Date(user.updated_at).toLocaleDateString()}</TableCell>
+            {permissions.map((permission) => (
+              <TableRow key={permission.id}>
+                <TableCell>{permission.id}</TableCell>
+                <TableCell>{permission.name}</TableCell>
+                <TableCell>{permission.description}</TableCell>
                 <TableCell>
-                  <div className="actions-container">
-					<Tooltip title="Editar usuario" arrow>
-					  <Button
-						variant="contained"
-						color="primary"
-						startIcon={<EditIcon />}
-						onClick={() => alert(`Editar usuario: ${user.username}`)}
-						style={{ marginRight: '8px' }}
-					  >
-					  </Button>
-					</Tooltip>
-					<Tooltip title="Eliminar usuario" arrow>
-					  <Button
+				  <div className="actions-container">
+				  <Tooltip title="Editar este permiso" arrow>
+				  <Button
+					variant="contained"
+					color="primary"
+					startIcon={<EditIcon />}
+					onClick={() => alert(`Editar permiso: ${permission.name}`)}
+					style={{ marginRight: '8px' }}
+				  >
+				  </Button>
+				  </Tooltip>
+				  <Tooltip title="Eliminar este permiso" arrow>
+					<Button
 						variant="outlined"
 						color="error"
 						startIcon={<DeleteIcon />}
-						onClick={() => alert(`Eliminar usuario: ${user.username}`)}
-					  >
-					  </Button>
-					</Tooltip>
+						onClick={() => alert(`Eliminar permiso: ${permission.name}`)}
+					>
+					</Button>
+				  </Tooltip>
 				  </div>
                 </TableCell>
               </TableRow>
@@ -100,8 +94,8 @@ function UserList() {
           </TableBody>
 		  <TableFooter>
             <TableRow>
-              <TableCell colSpan={7} align="right">
-                Total de usuarios: <strong>{users.length}</strong>
+              <TableCell colSpan={4} align="right">
+                Total de permisos: <strong>{permissions.length}</strong>
               </TableCell>
             </TableRow>
           </TableFooter>
@@ -111,4 +105,4 @@ function UserList() {
   );
 }
 
-export default UserList;
+export default PermissionList;
