@@ -85,6 +85,18 @@ Antes de comenzar, asegúrate de tener instalados los siguientes componentes:
 
 4. Verifica los datos creados accediendo a los endpoints correspondientes o revisando la salida del script.
 
+### **Uso del Makefile**
+
+1. **Comando `populate-db`**:
+   - Insertar datos de ejemplo en la base de datos.
+
+2. **Comando `make help`**:
+   - help` para mostrar todos los comandos disponibles.
+
+3. **Comando `make init-all`**:
+   - crea la base de datos, la inicializa y levanta la app.
+
+---
 ## Endpoints disponibles
 
 Puedes explorar los endpoints disponibles utilizando la documentación interactiva de Swagger en:
