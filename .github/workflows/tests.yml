@@ -23,6 +23,12 @@ jobs:
         with:
           python-version: 3.12
 
+      # Configurar variables de entorno
+      - name: Set environment variables
+        run: |
+          echo "DATABASE_URL=sqlite:///./test.db" >> $GITHUB_ENV
+          echo "SECRET_KEY=testsecretkey" >> $GITHUB_ENV
+
       # Instalar dependencias
       - name: Install dependencies
         run: |
