@@ -47,3 +47,4 @@ data/
 *.csv # Si son generados y no esenciales
 test.db
 user_manager.db
+server.pid

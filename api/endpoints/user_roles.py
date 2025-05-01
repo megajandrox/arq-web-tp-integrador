@@ -8,7 +8,7 @@ from api.endpoints.roles import get_role_service
 from api.endpoints.schema import RoleResponse, RoleUsersResponse, UserResponse, UserRoleAssign, UserRolesResponse
 from api.endpoints.users import get_user_service
 
-router = APIRouter(prefix="/user-roles", tags=["user_roles"])
+router = APIRouter(prefix="/api/user-roles", tags=["user_roles"])
 
 def get_user_role_repository(db: Session = Depends(get_db)) -> UserRoleRepository:
     return UserRoleRepository(db)

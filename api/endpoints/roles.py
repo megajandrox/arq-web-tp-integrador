@@ -7,7 +7,7 @@ from api.core.services import RoleService
 from api.endpoints.schema import RoleCreate, RolePermissionAssign, RoleResponse
 from typing import List
 
-router = APIRouter(prefix="/roles", tags=["roles"])
+router = APIRouter(prefix="/api/roles", tags=["roles"])
 
 def get_role_repository(db: Session = Depends(get_db)) -> RoleRepository:
     return RoleRepository(Role, db)

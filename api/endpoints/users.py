@@ -7,7 +7,7 @@ from api.core.services import UserService
 from api.endpoints.schema import UserCreate, UserResponse
 from typing import List
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(prefix="/api/users", tags=["users"])
 
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
     return UserRepository(User, db)

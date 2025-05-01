@@ -5,7 +5,7 @@ from api.core.services import PermissionService
 from api.core.database import get_db
 from api.endpoints.schema import PermissionCreate, PermissionResponse
 
-router = APIRouter(prefix="/permissions", tags=["permissions"])
+router = APIRouter(prefix="/api/permissions", tags=["permissions"])
 
 def get_permission_service(db=Depends(get_db)) -> PermissionService:
     from api.core.repository import PermissionRepository
