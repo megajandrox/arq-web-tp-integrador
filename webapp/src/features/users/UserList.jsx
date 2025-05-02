@@ -9,7 +9,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TableFooter,
   Tooltip,
   Button,
   Paper,
@@ -19,11 +18,15 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import '@/styles/TableStyles.css';
+import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog';
+import CustomTableFooter from '@/components/CustomTableFooter';
 
 function UserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,6 +47,36 @@ function UserList() {
       });
   }, []);
 
+  const handleDelete = (user) => {
+    setSelectedUser(user);
+    setIsDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    fetch(`/api/users/${selectedUser.id}`, {
+      method: 'DELETE',
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al eliminar el usuario');
+        }
+        setUsers(users.filter((u) => u.id !== selectedUser.id));
+        alert(`Usuario ${selectedUser.username} eliminado`);
+      })
+      .catch((err) => {
+        alert(`Error: ${err.message}`);
+      })
+      .finally(() => {
+        setIsDialogOpen(false);
+        setSelectedUser(null);
+      });
+  };
+
+  const cancelDelete = () => {
+    setSelectedUser(null);
+    setIsDialogOpen(false);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -56,16 +89,16 @@ function UserList() {
     <div>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography>Lista de Usuarios</Typography>
-		<Tooltip title="Agregar un nuevo usuario" arrow>
-			<Button
-			variant="contained"
-			color="primary"
-			startIcon={<AddIcon/>}
-			style={{ marginLeft: '8px' }}
-			onClick={() => navigate('/users/new')}
-			>
-			</Button>
-		</Tooltip>
+        <Tooltip title="Agregar un nuevo usuario" arrow>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            style={{ marginLeft: '8px' }}
+            onClick={() => navigate('/users/new')}
+          >
+          </Button>
+        </Tooltip>
       </Box>
       <TableContainer component={Paper} className="table-container">
         <Table>
@@ -106,7 +139,7 @@ function UserList() {
                         variant="outlined"
                         color="error"
                         startIcon={<DeleteIcon />}
-                        onClick={() => alert(`Eliminar usuario: ${user.username}`)}
+                        onClick={() => handleDelete(user)}
                       >
                       </Button>
                     </Tooltip>
@@ -115,15 +148,16 @@ function UserList() {
               </TableRow>
             ))}
           </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={7} align="right">
-                Total de usuarios: <strong>{users.length}</strong>
-              </TableCell>
-            </TableRow>
-          </TableFooter>
+          <CustomTableFooter label={'usuarios'} totalUsers={users.length} />
         </Table>
       </TableContainer>
+
+      <ConfirmDeleteDialog
+        open={isDialogOpen}
+        onClose={cancelDelete}
+        onConfirm={confirmDelete}
+        username={selectedUser?.username}
+      />
     </div>
   );
 }
