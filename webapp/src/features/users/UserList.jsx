@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   CircularProgress,
   Typography,
@@ -12,15 +13,18 @@ import {
   Tooltip,
   Button,
   Paper,
+  Box,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import '@/styles/TableStyles.css';
 
 function UserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('/api/users')
@@ -50,6 +54,19 @@ function UserList() {
 
   return (
     <div>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography>Lista de Usuarios</Typography>
+		<Tooltip title="Agregar un nuevo usuario" arrow>
+			<Button
+			variant="contained"
+			color="primary"
+			startIcon={<AddIcon/>}
+			style={{ marginLeft: '8px' }}
+			onClick={() => navigate('/users/new')}
+			>
+			</Button>
+		</Tooltip>
+      </Box>
       <TableContainer component={Paper} className="table-container">
         <Table>
           <TableHead>
@@ -74,31 +91,31 @@ function UserList() {
                 <TableCell>{new Date(user.updated_at).toLocaleDateString()}</TableCell>
                 <TableCell>
                   <div className="actions-container">
-					<Tooltip title="Editar usuario" arrow>
-					  <Button
-						variant="contained"
-						color="primary"
-						startIcon={<EditIcon />}
-						onClick={() => alert(`Editar usuario: ${user.username}`)}
-						style={{ marginRight: '8px' }}
-					  >
-					  </Button>
-					</Tooltip>
-					<Tooltip title="Eliminar usuario" arrow>
-					  <Button
-						variant="outlined"
-						color="error"
-						startIcon={<DeleteIcon />}
-						onClick={() => alert(`Eliminar usuario: ${user.username}`)}
-					  >
-					  </Button>
-					</Tooltip>
-				  </div>
+                    <Tooltip title="Editar usuario" arrow>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<EditIcon />}
+                        onClick={() => navigate(`/users/edit/${user.id}`)}
+                        style={{ marginRight: '8px' }}
+                      >
+                      </Button>
+                    </Tooltip>
+                    <Tooltip title="Eliminar usuario" arrow>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        startIcon={<DeleteIcon />}
+                        onClick={() => alert(`Eliminar usuario: ${user.username}`)}
+                      >
+                      </Button>
+                    </Tooltip>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
-		  <TableFooter>
+          <TableFooter>
             <TableRow>
               <TableCell colSpan={7} align="right">
                 Total de usuarios: <strong>{users.length}</strong>

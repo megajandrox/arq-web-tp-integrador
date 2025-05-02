@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import { CssBaseline, AppBar, Toolbar, Typography, Avatar, Box } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './features/sidebar/Sidebar';
 import UserList from './features/users/UserList';
 import RoleList from './features/roles/RoleList';
 import PermissionList from './features/permissions/PermissionList';
+import EditUser from './features/users/EditUser';
+import NewUser from './features/users/NewUser'; // Importar el componente de creación de usuario
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import './App.css';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2', // Color principal
+      main: '#1976d2',
     },
     secondary: {
-      main: '#dc004e', // Color secundario
+      main: '#dc004e',
     },
   },
 });
@@ -37,30 +40,36 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="app-container">
-        <CssBaseline />
+      <Router>
+        <div className="app-container">
+          <CssBaseline />
 
-        {/* Header */}
-        <AppBar position="fixed" className="app-header">
-          <Toolbar>
-            <Typography variant="h6" className="app-title" sx={{ flexGrow: 1 }}>
-              Manager API
-            </Typography>
-            <Box display="flex" alignItems="center" gap={1}>
-              <Avatar alt="Usuario" src="/path/to/avatar.jpg" />
-              <Typography variant="body1" className="app-user">
-                Usuario: <strong>{loggedInUser}</strong>
+          {/* Header */}
+          <AppBar position="fixed" className="app-header">
+            <Toolbar>
+              <Typography variant="h6" className="app-title" sx={{ flexGrow: 1 }}>
+                User Manager
               </Typography>
-            </Box>
-          </Toolbar>
-        </AppBar>
-
-        {/* Layout con Sidebar y Contenido */}
-        <div className="app-layout">
-          <Sidebar selectedSection={selectedSection} onSelect={setSelectedSection} />
-          <main className="app-main">{renderContent()}</main>
+              <Box display="flex" alignItems="center" gap={1}>
+                <Avatar alt="Usuario" src="/path/to/avatar.jpg" />
+                <Typography variant="body1" className="app-user">
+                  Usuario: <strong>{loggedInUser}</strong>
+                </Typography>
+              </Box>
+            </Toolbar>
+          </AppBar>
+          <div className="app-layout">
+            <Sidebar selectedSection={selectedSection} onSelect={setSelectedSection} />
+            <main className="app-main">
+              <Routes>
+                <Route path="/" element={renderContent()} />
+                <Route path="/users/edit/:id" element={<EditUser />} />
+                <Route path="/users/new" element={<NewUser />} />
+              </Routes>
+            </main>
+          </div>
         </div>
-      </div>
+      </Router>
     </ThemeProvider>
   );
 }
