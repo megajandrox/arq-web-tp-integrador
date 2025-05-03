@@ -1,5 +1,6 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { NavLink } from 'react-router-dom'; // Importar NavLink para la navegación
 import PeopleIcon from '@mui/icons-material/People';
 import SecurityIcon from '@mui/icons-material/Security';
 import LockIcon from '@mui/icons-material/Lock';
@@ -11,8 +12,10 @@ function Sidebar({ selectedSection, onSelect }) {
       <List>
         <ListItem
           button
+          component={NavLink}
+          to="/"
+          className={({ isActive }) => (isActive ? 'sidebar-item selected' : 'sidebar-item')}
           onClick={() => onSelect('users')}
-          className={selectedSection === 'users' ? 'sidebar-item selected' : 'sidebar-item'}
         >
           <ListItemIcon>
             <PeopleIcon />
@@ -21,8 +24,10 @@ function Sidebar({ selectedSection, onSelect }) {
         </ListItem>
         <ListItem
           button
+          component={NavLink}
+          to="/roles"
+          className={({ isActive }) => (isActive ? 'sidebar-item selected' : 'sidebar-item')}
           onClick={() => onSelect('roles')}
-          className={selectedSection === 'roles' ? 'sidebar-item selected' : 'sidebar-item'}
         >
           <ListItemIcon>
             <SecurityIcon />
@@ -31,8 +36,10 @@ function Sidebar({ selectedSection, onSelect }) {
         </ListItem>
         <ListItem
           button
+          component={NavLink}
+          to="/permissions"
+          className={({ isActive }) => (isActive ? 'sidebar-item selected' : 'sidebar-item')}
           onClick={() => onSelect('permissions')}
-          className={selectedSection === 'permissions' ? 'sidebar-item selected' : 'sidebar-item'}
         >
           <ListItemIcon>
             <LockIcon />

@@ -66,7 +66,9 @@ function App() {
                 <Route path="/" element={<UserList />} />
                 <Route path="/users/new" element={<NewUser />} />
                 <Route path="/users/edit/:id" element={<EditUser />} />
-                <Route path="/users/:id/assign-roles" element={<AssignRoles />} /> {/* Nueva ruta */}
+                <Route path="/users/:id/assign-roles" element={<AssignRoles />} /> 
+                <Route path="/roles" element={<RoleList />} />
+                <Route path="/permissions" element={<PermissionList />} />
               </Routes>
             </main>
           </div>
