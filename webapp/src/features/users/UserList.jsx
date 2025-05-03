@@ -108,7 +108,7 @@ function UserList() {
   return (
     <div>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography>Lista de Usuarios</Typography>
+        <Typography variant="h5">Lista de Usuarios</Typography>
         <Box>
           <Tooltip title="Agregar un nuevo usuario" arrow>
             <Button

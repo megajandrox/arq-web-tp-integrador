@@ -15,7 +15,10 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Button,
+  Box,
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockIcon from '@mui/icons-material/Lock';
@@ -87,6 +90,19 @@ function RoleList() {
 
   return (
     <div>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h5">Lista de Roles</Typography>
+        <Tooltip title="Agregar un nuevo rol" arrow>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => navigate('/roles/new')}
+          >
+            Nuevo Rol
+          </Button>
+        </Tooltip>
+      </Box>
       <TableContainer component={Paper} className="table-container">
         <Table>
           <TableHead>

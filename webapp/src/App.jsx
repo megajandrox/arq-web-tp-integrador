@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './features/sidebar/Sidebar';
 import UserList from './features/users/UserList';
 import RoleList from './features/roles/RoleList';
+import EditRole from './features/roles/EditRole';
+import NewRole from './features/roles/NewRole';
 import PermissionList from './features/permissions/PermissionList';
 import EditUser from './features/users/EditUser';
 import NewUser from './features/users/NewUser'; // Importar el componente de creación de usuario
@@ -69,6 +71,8 @@ function App() {
                 <Route path="/users/edit/:id" element={<EditUser />} />
                 <Route path="/users/:id/assign-roles" element={<AssignRoles />} /> 
                 <Route path="/roles" element={<RoleList />} />
+                <Route path="/roles/new" element={<NewRole />} />
+                <Route path="/roles/edit/:id" element={<EditRole />} />
                 <Route path="/permissions" element={<PermissionList />} />
                 <Route path="/roles/:id/assign-permissions" element={<AssignPermissions />} />
               </Routes>
