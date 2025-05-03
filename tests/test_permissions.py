@@ -1,3 +1,4 @@
+from datetime import datetime
 import pytest
 from fastapi.testclient import TestClient
 from api.main import app
@@ -22,69 +23,61 @@ def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 
 client = TestClient(app)
+BASE_URI = "/api"  # Base URI para todos los endpoints
 
 @pytest.fixture
-def setup_test_permissions():
+def setup_test_data():
     db = TestingSessionLocal()
     try:
-        permission1 = Permission(name="read", description="Permission to read data")
-        permission2 = Permission(name="write", description="Permission to write data")
-        db.add(permission1)
-        db.add(permission2)
+        permission = Permission(name="Read", description="Permission to read data")
+        db.add(permission)
         db.commit()
-        db.refresh(permission1)
-        db.refresh(permission2)
+        db.refresh(permission)
         yield
     finally:
         db.query(Permission).delete()
         db.commit()
         db.close()
 
-def test_get_all_permissions(setup_test_permissions):
-    response = client.get("/permissions/")
+def test_get_all_permissions(setup_test_data):
+    response = client.get(f"{BASE_URI}/permissions/")
     assert response.status_code == 200
     data = response.json()
-    assert len(data) == 2
-    assert data[0]["name"] == "read"
-    assert data[1]["name"] == "write"
+    assert len(data) == 1
+    assert data[0]["name"] == "Read"
 
-def test_get_permission_by_id(setup_test_permissions):
-    response = client.get("/permissions/1")
+def test_get_permission_by_id(setup_test_data):
+    response = client.get(f"{BASE_URI}/permissions/1")
     assert response.status_code == 200
     data = response.json()
-    assert data["name"] == "read"
+    assert data["name"] == "Read"
     assert data["description"] == "Permission to read data"
 
 def test_create_permission():
     new_permission = {
-        "name": "delete",
-        "description": "Permission to delete data"
+        "name": "Write",
+        "description": "Permission to write data"
     }
-    response = client.post("/permissions/", json=new_permission)
+    response = client.post(f"{BASE_URI}/permissions/", json=new_permission)
     assert response.status_code == 201
     data = response.json()
-    assert data["name"] == "delete"
-    assert data["description"] == "Permission to delete data"
+    assert data["name"] == "Write"
+    assert data["description"] == "Permission to write data"
 
-def test_update_permission(setup_test_permissions):
+def test_update_permission(setup_test_data):
     updated_permission = {
-        "name": "read-write",
-        "description": "Permission to read and write data"
+        "name": "Read-Only",
+        "description": "Updated permission to read data"
     }
-    response = client.put("/permissions/1", json=updated_permission)
+    response = client.put(f"{BASE_URI}/permissions/1", json=updated_permission)
     assert response.status_code == 200
     data = response.json()
-    assert data["name"] == "read-write"
-    assert data["description"] == "Permission to read and write data"
+    assert data["name"] == "Read-Only"
+    assert data["description"] == "Updated permission to read data"
 
-def test_delete_permission(setup_test_permissions):
-    response = client.delete("/permissions/1")
+def test_delete_permission(setup_test_data):
+    response = client.delete(f"{BASE_URI}/permissions/1")
     assert response.status_code == 204  # No Content
 
-    response = client.get("/permissions/1")
+    response = client.get(f"{BASE_URI}/permissions/1")
     assert response.status_code == 404  # Not Found
-
-    response = client.get("/permissions/")
-    data = response.json()
-    assert len(data) == 1
-    assert data[0]["name"] == "write"

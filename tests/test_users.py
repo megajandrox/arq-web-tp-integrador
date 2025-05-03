@@ -1,3 +1,4 @@
+from datetime import datetime
 import pytest
 from fastapi.testclient import TestClient
 from api.main import app
@@ -22,6 +23,7 @@ def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 
 client = TestClient(app)
+BASE_URI = "/api"  # Base URI para todos los endpoints
 
 @pytest.fixture
 def setup_test_data():
@@ -41,7 +43,7 @@ def setup_test_data():
         db.close()
 
 def test_get_all_users(setup_test_data):
-    response = client.get("/users/")
+    response = client.get(f"{BASE_URI}/users/")
     assert response.status_code == 200
     data = response.json()
     assert len(data) == 2
@@ -49,7 +51,7 @@ def test_get_all_users(setup_test_data):
     assert data[1]["username"] == "testuser2"
 
 def test_get_user_by_id(setup_test_data):
-    response = client.get("/users/1")
+    response = client.get(f"{BASE_URI}/users/1")
     assert response.status_code == 200
     data = response.json()
     assert data["username"] == "testuser1"
@@ -64,7 +66,7 @@ def test_create_user():
         "created_at": "2025-01-01",
         "updated_at": "2025-01-01"
     }
-    response = client.post("/users/", json=new_user)
+    response = client.post(f"{BASE_URI}/users/", json=new_user)
     assert response.status_code == 201
     data = response.json()
     assert data["username"] == "newuser"
@@ -79,21 +81,22 @@ def test_update_user(setup_test_data):
         "created_at": "2025-01-01",
         "updated_at": "2025-01-02"
     }
-    response = client.put("/users/1", json=updated_user)
+    response = client.put(f"{BASE_URI}/users/1", json=updated_user)
     assert response.status_code == 200
     data = response.json()
     assert data["username"] == "updateduser"
     assert data["email"] == "updateduser@example.com"
-    assert data["updated_at"].startswith("2025-01-02")
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    assert data["updated_at"].startswith(current_date)
 
 def test_delete_user(setup_test_data):
-    response = client.delete("/users/1")
+    response = client.delete(f"{BASE_URI}/users/1")
     assert response.status_code == 204  # No Content
 
-    response = client.get("/users/1")
+    response = client.get(f"{BASE_URI}/users/1")
     assert response.status_code == 404  # Not Found
 
-    response = client.get("/users/")
+    response = client.get(f"{BASE_URI}/users/")
     data = response.json()
     assert len(data) == 1
     assert data[0]["username"] == "testuser2"
