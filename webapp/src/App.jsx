@@ -8,6 +8,7 @@ import PermissionList from './features/permissions/PermissionList';
 import EditUser from './features/users/EditUser';
 import NewUser from './features/users/NewUser'; // Importar el componente de creación de usuario
 import AssignRoles from './features/users/AssignRoles'; // Importar el nuevo componente
+import AssignPermissions from './features/roles/AssignPermissions'; // Importar el nuevo componente
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import './App.css';
 
@@ -69,6 +70,7 @@ function App() {
                 <Route path="/users/:id/assign-roles" element={<AssignRoles />} /> 
                 <Route path="/roles" element={<RoleList />} />
                 <Route path="/permissions" element={<PermissionList />} />
+                <Route path="/roles/:id/assign-permissions" element={<AssignPermissions />} />
               </Routes>
             </main>
           </div>

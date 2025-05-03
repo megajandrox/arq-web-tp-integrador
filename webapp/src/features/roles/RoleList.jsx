@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   CircularProgress,
   Typography,
@@ -10,17 +11,24 @@ import {
   TableRow,
   TableFooter,
   Tooltip,
-  Button,
   Paper,
+  IconButton,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LockIcon from '@mui/icons-material/Lock';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import '@/styles/TableStyles.css';
 
 function RoleList() {
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const [menuRole, setMenuRole] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('/api/roles')
@@ -39,6 +47,35 @@ function RoleList() {
         setLoading(false);
       });
   }, []);
+
+  const handleMenuOpen = (event, role) => {
+    setMenuAnchor(event.currentTarget);
+    setMenuRole(role);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchor(null);
+    setMenuRole(null);
+  };
+
+  const handleDelete = (role) => {
+    if (window.confirm(`¿Estás seguro de que deseas eliminar el rol "${role.name}"?`)) {
+      fetch(`/api/roles/${role.id}`, {
+        method: 'DELETE',
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Error al eliminar el rol');
+          }
+          setRoles(roles.filter((r) => r.id !== role.id));
+          alert(`Rol "${role.name}" eliminado correctamente`);
+        })
+        .catch((err) => {
+          alert(`Error: ${err.message}`);
+        });
+    }
+    handleMenuClose();
+  };
 
   if (loading) {
     return <CircularProgress />;
@@ -66,33 +103,33 @@ function RoleList() {
                 <TableCell>{role.id}</TableCell>
                 <TableCell>{role.name}</TableCell>
                 <TableCell>{role.description}</TableCell>
-                <TableCell>
-				<div className="actions-container">
-				  <Tooltip title="Editar rol" arrow>
-					<Button
-					  variant="contained"
-					  color="primary"
-					  startIcon={<EditIcon />}
-					  onClick={() => alert(`Editar rol: ${role.name}`)}
-					  style={{ marginRight: '8px' }}
-					>
-					</Button>
-				  </Tooltip>
-				  <Tooltip title="Eliminar rol" arrow>
-					<Button
-						variant="outlined"
-						color="error"
-						startIcon={<DeleteIcon />}
-						onClick={() => alert(`Eliminar rol: ${role.name}`)}
-					>
-					</Button>
-				  </Tooltip>
-				</div>
+                <TableCell align="right">
+                  <IconButton onClick={(event) => handleMenuOpen(event, role)}>
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    anchorEl={menuAnchor}
+                    open={Boolean(menuAnchor) && menuRole?.id === role.id}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem onClick={() => navigate(`/roles/edit/${role.id}`)}>
+                      <EditIcon fontSize="small" sx={{ mr: 1 }} />
+                      Editar
+                    </MenuItem>
+                    <MenuItem onClick={() => handleDelete(role)}>
+                      <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+                      Eliminar
+                    </MenuItem>
+                    <MenuItem onClick={() => navigate(`/roles/${role.id}/assign-permissions`)}>
+                      <LockIcon fontSize="small" sx={{ mr: 1 }} />
+                      Asignar Permisos
+                    </MenuItem>
+                  </Menu>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
-		  <TableFooter>
+          <TableFooter>
             <TableRow>
               <TableCell colSpan={4} align="right">
                 Total de roles: <strong>{roles.length}</strong>

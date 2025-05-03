@@ -48,3 +48,4 @@ data/
 test.db
 user_manager.db
 server.pid
+webapp/node_modules/

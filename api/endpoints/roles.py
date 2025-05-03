@@ -57,8 +57,9 @@ def assign_permission_to_role(
 
 @router.delete("/{role_id}/permissions", status_code=status.HTTP_204_NO_CONTENT)
 def remove_permission_from_role(
-    role_permission: RolePermissionAssign,
+    role_id: int,
+    permission_id: int,
     service: RoleService = Depends(get_role_service)
 ):
-    service.remove_permission_from_role(role_permission.role_id, role_permission.permission_id)
-    return {"message": "Permission removed from role successfully"}
+    service.remove_permission_from_role(role_id, permission_id)
+    return None

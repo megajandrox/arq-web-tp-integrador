@@ -70,7 +70,6 @@ class UserRolesResponse(BaseModel):
     roles: List[RoleResponse]
     model_config = ConfigDict(from_attributes=True)
 
-
 class RoleUsersResponse(BaseModel):
     role_id: int
     users: List[UserResponse]
