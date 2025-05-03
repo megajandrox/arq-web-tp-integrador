@@ -22,6 +22,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import GroupAddIcon from '@mui/icons-material/GroupAdd'; // Icono para agregar roles
 import MoreVertIcon from '@mui/icons-material/MoreVert'; // Icono de tres puntos
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // Ícono de check
+import CancelIcon from '@mui/icons-material/Cancel'; // Ícono de cruz
 import '@/styles/TableStyles.css';
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog';
 import CustomTableFooter from '@/components/CustomTableFooter';
@@ -140,7 +142,13 @@ function UserList() {
                 <TableCell>{user.id}</TableCell>
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.is_active ? 'Sí' : 'No'}</TableCell>
+                <TableCell align="center">
+                  {user.is_active ? (
+                    <CheckCircleIcon color="success" /> // Ícono verde para activo
+                  ) : (
+                    <CancelIcon color="error" /> // Ícono rojo para inactivo
+                  )}
+                </TableCell>
                 <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                 <TableCell>{new Date(user.updated_at).toLocaleDateString()}</TableCell>
                 <TableCell align="right">

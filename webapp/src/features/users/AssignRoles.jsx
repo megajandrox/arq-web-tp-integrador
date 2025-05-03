@@ -18,15 +18,14 @@ import {
 function AssignRoles() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [roles, setRoles] = useState([]); // Lista de roles disponibles { id, name }
-  const [selectedRoles, setSelectedRoles] = useState([]); // IDs de los roles seleccionados
-  const [currentRoles, setCurrentRoles] = useState([]); // IDs de los roles actuales del usuario
+  const [roles, setRoles] = useState([]);
+  const [selectedRoles, setSelectedRoles] = useState([]);
+  const [currentRoles, setCurrentRoles] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Obtener la información del usuario
     fetch(`/api/users/${id}`)
       .then((response) => {
         if (!response.ok) {
@@ -41,7 +40,6 @@ function AssignRoles() {
         setError(err.message);
       });
 
-    // Obtener la lista de roles disponibles
     fetch('/api/roles')
       .then((response) => {
         if (!response.ok) {
@@ -50,13 +48,12 @@ function AssignRoles() {
         return response.json();
       })
       .then((data) => {
-        setRoles(data); // Guardar roles como objetos { id, name }
+        setRoles(data);
       })
       .catch((err) => {
         setError(err.message);
       });
 
-    // Obtener los roles actuales del usuario
     fetch(`/api/user-roles/roles/${id}`)
       .then((response) => {
         if (!response.ok) {
@@ -65,16 +62,14 @@ function AssignRoles() {
         return response.json();
       })
       .then((data) => {
-		console.log(data);
-		if(!(data.roles.length === 0)){
-			setCurrentRoles(data.roles.map((role) => role.id)); // Guardar solo los IDs de los roles actuales
-			setSelectedRoles(data.roles.map((role) => role.id)); // Inicializar los roles seleccionados con los actuales
-		} else {
-			setCurrentRoles([]); // Si no hay roles, inicializar como vacío
-			setSelectedRoles([]); // Inicializar los roles seleccionados como vacío
-		}
-		setLoading(false);
-        
+        if (!(data.roles.length === 0)) {
+          setCurrentRoles(data.roles.map((role) => role.id));
+          setSelectedRoles(data.roles.map((role) => role.id));
+        } else {
+          setCurrentRoles([]);
+          setSelectedRoles([]);
+        }
+        setLoading(false);
       })
       .catch((err) => {
         setError(err.message);
@@ -84,14 +79,13 @@ function AssignRoles() {
 
   const handleRoleToggle = (roleId) => {
     if (selectedRoles.includes(roleId)) {
-      setSelectedRoles(selectedRoles.filter((id) => id !== roleId)); // Quitar el rol si ya está seleccionado
+      setSelectedRoles(selectedRoles.filter((id) => id !== roleId));
     } else {
-      setSelectedRoles([...selectedRoles, roleId]); // Agregar el rol si no está seleccionado
+      setSelectedRoles([...selectedRoles, roleId]);
     }
   };
 
   const handleSave = () => {
-    // Eliminar los roles actuales
     const deleteRequests = currentRoles.map((roleId) => {
       return fetch(`/api/user-roles/?user_id=${id}&role_id=${roleId}`, {
         method: 'DELETE',
@@ -99,20 +93,22 @@ function AssignRoles() {
           'accept': '*/*',
         },
       }).then((response) => {
-        if (!response.ok) {
+        if (response.status === 204) {
+          return null;
+        }
+        if (!response.status === 204) {
           throw new Error(`Error al eliminar el rol con ID ${roleId}`);
         }
         return response.json();
       });
     });
 
-    // Después de eliminar, asignar los nuevos roles seleccionados
     Promise.all(deleteRequests)
       .then(() => {
         const addRequests = selectedRoles.map((roleId) => {
           const body = {
-            user_id: parseInt(id), // ID del usuario seleccionado
-            role_id: parseInt(roleId), // ID del rol seleccionado
+            user_id: parseInt(id),
+            role_id: parseInt(roleId),
           };
 
           return fetch(`/api/user-roles`, {
@@ -122,7 +118,7 @@ function AssignRoles() {
             },
             body: JSON.stringify(body),
           }).then((response) => {
-            if (!response.ok) {
+            if (!response.status === 201) {
               throw new Error(`Error al asignar el rol con ID ${roleId}`);
             }
             return response.json();
@@ -133,10 +129,10 @@ function AssignRoles() {
       })
       .then(() => {
         alert('Roles actualizados correctamente');
-        navigate('/'); // Redirigir a la lista de usuarios
+        navigate('/');
       })
       .catch((err) => {
-        alert(`Error: ${err.message}`);
+        alert(`Error al crear: ${err.message}`);
       });
   };
 
@@ -172,8 +168,8 @@ function AssignRoles() {
               <TableRow key={role.id}>
                 <TableCell>
                   <Checkbox
-                    checked={selectedRoles.includes(role.id)} // Verificar si el rol está seleccionado
-                    onChange={() => handleRoleToggle(role.id)} // Alternar selección
+                    checked={selectedRoles.includes(role.id)}
+                    onChange={() => handleRoleToggle(role.id)}
                   />
                 </TableCell>
                 <TableCell>{role.name}</TableCell>
