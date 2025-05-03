@@ -29,15 +29,37 @@ function EditUser() {
   }, [id]);
 
   const handleSave = () => {
-    // Simulación de guardar los cambios
-    alert(`Usuario ${user.username} actualizado`);
-    navigate('/'); // Redirigir a la lista de usuarios
+    const userData = {
+      username: user.username,
+      email: user.email,
+      is_active: user.is_active ? 1 : 0,
+    };
+
+    fetch(`/api/users/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al actualizar el usuario');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        alert(`Usuario ${data.username} actualizado correctamente`);
+        navigate('/');
+      })
+      .catch((err) => {
+        alert(`Error: ${err.message}`);
+      });
   };
 
   const handleResetPassword = () => {
-    // Simulación de reseteo de contraseña
     alert(`Contraseña del usuario ${user.username} reseteada`);
-    setIsResetDialogOpen(false); // Cerrar el diálogo
+    setIsResetDialogOpen(false);
   };
 
   const openResetDialog = () => {

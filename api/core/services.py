@@ -4,7 +4,7 @@ from fastapi import HTTPException, status
 from pydantic import BaseModel
 from api.core.models import Permission, Role, User
 from api.core.repository import BaseRepository, RoleRepository, UserRepository, UserRoleRepository
-from api.endpoints.schema import Link, PermissionCreate, PermissionResponse, RoleCreate, RoleResponse, UserCreate, UserResponse
+from api.endpoints.schema import Link, PermissionCreate, PermissionResponse, RoleCreate, RoleResponse, UserCreate, UserResponse, UserUpdate
 from api.helpers.security import hash_password
 
 ModelType = TypeVar("ModelType")
@@ -82,7 +82,7 @@ class UserService(BaseService[User, UserCreate]):
         user = super().create(user_in)
         return UserResponse.model_validate(user)
 
-    def update(self, user_id: int, user_in: UserCreate) -> UserResponse:
+    def update(self, user_id: int, user_in: UserUpdate) -> UserResponse:
         user = super().update(user_id, user_in)
         return UserResponse.model_validate(user)
     

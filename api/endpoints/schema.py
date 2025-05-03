@@ -15,6 +15,13 @@ class UserCreate(BaseModel):
     is_active: Optional[int] = None
     model_config = ConfigDict(from_attributes=True)
 
+class UserUpdate(BaseModel):
+    username: str
+    email: str
+    updated_at: Optional[datetime] = None
+    is_active: Optional[int] = None
+    model_config = ConfigDict(from_attributes=True)
+
 class UserResponse(BaseModel):
     id: int
     username: str

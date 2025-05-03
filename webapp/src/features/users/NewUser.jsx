@@ -7,13 +7,41 @@ function NewUser() {
   const [user, setUser] = useState({
     username: '',
     email: '',
-    is_active: true, // Estado inicial del campo "activo"
+    is_active: true,
   });
 
+  const generatePassword = () => {
+    return Math.random().toString(36).slice(-8); // Generar una contraseña aleatoria
+  };
+
   const handleSave = () => {
-    // Simulación de guardar el nuevo usuario
-    alert(`Usuario ${user.username} creado con estado ${user.is_active ? 'Activo' : 'Inactivo'}`);
-    navigate('/');
+    const password = generatePassword();
+    const userData = {
+      ...user,
+      is_active: user.is_active ? 1 : 0,
+      password_hash: password,
+    };
+
+    fetch('/api/users/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al crear el usuario');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        alert(`Usuario ${data.username} creado con contraseña: ${password}`);
+        navigate('/');
+      })
+      .catch((err) => {
+        alert(`Error: ${err.message}`);
+      });
   };
 
   return (
