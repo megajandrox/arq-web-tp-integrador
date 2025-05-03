@@ -13,10 +13,15 @@ import {
   Button,
   Paper,
   Box,
+  IconButton,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import GroupAddIcon from '@mui/icons-material/GroupAdd'; // Icono para agregar roles
+import MoreVertIcon from '@mui/icons-material/MoreVert'; // Icono de tres puntos
 import '@/styles/TableStyles.css';
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog';
 import CustomTableFooter from '@/components/CustomTableFooter';
@@ -27,6 +32,8 @@ function UserList() {
   const [error, setError] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [menuAnchor, setMenuAnchor] = useState(null); // Estado para controlar el menú desplegable
+  const [menuUser, setMenuUser] = useState(null); // Usuario seleccionado para el menú
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,9 +54,20 @@ function UserList() {
       });
   }, []);
 
+  const handleMenuOpen = (event, user) => {
+    setMenuAnchor(event.currentTarget);
+    setMenuUser(user);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchor(null);
+    setMenuUser(null);
+  };
+
   const handleDelete = (user) => {
     setSelectedUser(user);
     setIsDialogOpen(true);
+    handleMenuClose();
   };
 
   const confirmDelete = () => {
@@ -89,16 +107,19 @@ function UserList() {
     <div>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography>Lista de Usuarios</Typography>
-        <Tooltip title="Agregar un nuevo usuario" arrow>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            style={{ marginLeft: '8px' }}
-            onClick={() => navigate('/users/new')}
-          >
-          </Button>
-        </Tooltip>
+        <Box>
+          <Tooltip title="Agregar un nuevo usuario" arrow>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={() => navigate('/users/new')}
+              style={{ marginRight: '8px' }}
+            >
+              Nuevo Usuario
+            </Button>
+          </Tooltip>
+        </Box>
       </Box>
       <TableContainer component={Paper} className="table-container">
         <Table>
@@ -122,28 +143,28 @@ function UserList() {
                 <TableCell>{user.is_active ? 'Sí' : 'No'}</TableCell>
                 <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                 <TableCell>{new Date(user.updated_at).toLocaleDateString()}</TableCell>
-                <TableCell>
-                  <div className="actions-container">
-                    <Tooltip title="Editar usuario" arrow>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<EditIcon />}
-                        onClick={() => navigate(`/users/edit/${user.id}`)}
-                        style={{ marginRight: '8px' }}
-                      >
-                      </Button>
-                    </Tooltip>
-                    <Tooltip title="Eliminar usuario" arrow>
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        startIcon={<DeleteIcon />}
-                        onClick={() => handleDelete(user)}
-                      >
-                      </Button>
-                    </Tooltip>
-                  </div>
+                <TableCell align="right">
+                  <IconButton onClick={(event) => handleMenuOpen(event, user)}>
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    anchorEl={menuAnchor}
+                    open={Boolean(menuAnchor) && menuUser?.id === user.id}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem onClick={() => navigate(`/users/edit/${user.id}`)}>
+                      <EditIcon fontSize="small" sx={{ mr: 1 }} />
+                      Editar
+                    </MenuItem>
+                    <MenuItem onClick={() => handleDelete(user)}>
+                      <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+                      Eliminar
+                    </MenuItem>
+                    <MenuItem onClick={() => navigate(`/users/${user.id}/assign-roles`)}>
+                      <GroupAddIcon fontSize="small" sx={{ mr: 1 }} />
+                      Asignar Roles
+                    </MenuItem>
+                  </Menu>
                 </TableCell>
               </TableRow>
             ))}

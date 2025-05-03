@@ -7,6 +7,7 @@ import RoleList from './features/roles/RoleList';
 import PermissionList from './features/permissions/PermissionList';
 import EditUser from './features/users/EditUser';
 import NewUser from './features/users/NewUser'; // Importar el componente de creación de usuario
+import AssignRoles from './features/users/AssignRoles'; // Importar el nuevo componente
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import './App.css';
 
@@ -62,9 +63,10 @@ function App() {
             <Sidebar selectedSection={selectedSection} onSelect={setSelectedSection} />
             <main className="app-main">
               <Routes>
-                <Route path="/" element={renderContent()} />
-                <Route path="/users/edit/:id" element={<EditUser />} />
+                <Route path="/" element={<UserList />} />
                 <Route path="/users/new" element={<NewUser />} />
+                <Route path="/users/edit/:id" element={<EditUser />} />
+                <Route path="/users/:id/assign-roles" element={<AssignRoles />} /> {/* Nueva ruta */}
               </Routes>
             </main>
           </div>

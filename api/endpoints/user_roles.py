@@ -41,7 +41,7 @@ def get_roles_by_user(
 ):
     user_roles = service.get_roles_by_user(user_id)
     if not user_roles:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No roles found for this user")
+        return UserRolesResponse(user_id=user_id, roles=[])
     
     roles = [service_role.get_by_id(user_role.role_id) for user_role in user_roles]
     roles_response = [RoleResponse.from_orm(role) for role in roles]
