@@ -7,6 +7,8 @@ import RoleList from './features/roles/RoleList';
 import EditRole from './features/roles/EditRole';
 import NewRole from './features/roles/NewRole';
 import PermissionList from './features/permissions/PermissionList';
+import NewPermission from './features/permissions/NewPermission';
+import EditPermission from './features/permissions/EditPermission';
 import EditUser from './features/users/EditUser';
 import NewUser from './features/users/NewUser'; // Importar el componente de creación de usuario
 import AssignRoles from './features/users/AssignRoles'; // Importar el nuevo componente
@@ -74,6 +76,8 @@ function App() {
                 <Route path="/roles/new" element={<NewRole />} />
                 <Route path="/roles/edit/:id" element={<EditRole />} />
                 <Route path="/permissions" element={<PermissionList />} />
+                <Route path="/permissions/new" element={<NewPermission />} />
+                <Route path="/permissions/edit/:id" element={<EditPermission />} />
                 <Route path="/roles/:id/assign-permissions" element={<AssignPermissions />} />
               </Routes>
             </main>
