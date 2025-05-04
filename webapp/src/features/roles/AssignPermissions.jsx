@@ -16,17 +16,16 @@ import {
 } from '@mui/material';
 
 function AssignPermissions() {
-  const { id } = useParams(); // ID del rol seleccionado
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [permissions, setPermissions] = useState([]); // Lista de permisos disponibles
-  const [selectedPermissions, setSelectedPermissions] = useState([]); // IDs de los permisos seleccionados
-  const [currentPermissions, setCurrentPermissions] = useState([]); // IDs de los permisos actuales del rol
-  const [role, setRole] = useState(null); // Información del rol seleccionado
+  const [permissions, setPermissions] = useState([]);
+  const [selectedPermissions, setSelectedPermissions] = useState([]);
+  const [currentPermissions, setCurrentPermissions] = useState([]);
+  const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Obtener la información del rol
     fetch(`/api/roles/${id}`)
       .then((response) => {
         if (!response.ok) {
@@ -41,7 +40,6 @@ function AssignPermissions() {
         setError(err.message);
       });
 
-    // Obtener la lista de permisos disponibles
     fetch('/api/permissions')
       .then((response) => {
         if (!response.ok) {
@@ -56,7 +54,6 @@ function AssignPermissions() {
         setError(err.message);
       });
 
-    // Obtener los permisos actuales del rol
     fetch(`/api/roles/${id}`)
       .then((response) => {
         if (!response.ok) {

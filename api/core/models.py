@@ -2,7 +2,6 @@ from api.core.database import Base
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, ForeignKey, Integer, String, Table
 
-# Tabla intermedia para la relación Role <-> Permission
 role_permissions = Table(
     "role_permissions",
     Base.metadata,

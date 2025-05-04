@@ -5,25 +5,25 @@ from api.endpoints.users import router as users_router
 from api.endpoints.roles import router as roles_router
 from api.endpoints.user_roles import router as user_roles_router
 from api.endpoints.permissions import router as permissions_router
+from api.endpoints.reports import router as reports_router
 
 settings = Settings()
 
 app = FastAPI(debug=settings.DEBUG)
 
-# Configurar CORS (para conectar con React)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.ALLOWED_ORIGINS],  # URL del frontend
+    allow_origins=[settings.ALLOWED_ORIGINS],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Incluir rutas
 app.include_router(users_router)
 app.include_router(roles_router)
 app.include_router(user_roles_router)
 app.include_router(permissions_router)
+app.include_router(reports_router)
 
 from fastapi.openapi.utils import get_openapi
 

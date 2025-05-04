@@ -8,7 +8,7 @@ function EditRole() {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false); // Estado para controlar el diálogo de reseteo de permisos
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
 
   useEffect(() => {
     fetch(`/api/roles/${id}`)

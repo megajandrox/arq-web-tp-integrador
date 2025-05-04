@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom'; // Importar NavLink para la navegaci
 import PeopleIcon from '@mui/icons-material/People';
 import SecurityIcon from '@mui/icons-material/Security';
 import LockIcon from '@mui/icons-material/Lock';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import './Sidebar.css';
 
 function Sidebar({ selectedSection, onSelect }) {
@@ -45,6 +46,17 @@ function Sidebar({ selectedSection, onSelect }) {
             <LockIcon />
           </ListItemIcon>
           <ListItemText primary="Permisos" />
+        </ListItem>
+        <ListItem b button
+          component={NavLink}
+          to="/reports"
+          className={({ isActive }) => (isActive ? 'sidebar-item selected' : 'sidebar-item')}
+          onClick={() => onSelect('reports')}
+        >
+          <ListItemIcon>
+            <AssignmentIcon />
+          </ListItemIcon>
+          <ListItemText primary="Reportes" />
         </ListItem>
       </List>
     </Drawer>

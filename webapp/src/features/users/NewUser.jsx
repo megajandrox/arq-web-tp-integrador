@@ -11,7 +11,7 @@ function NewUser() {
   });
 
   const generatePassword = () => {
-    return Math.random().toString(36).slice(-8); // Generar una contraseña aleatoria
+    return Math.random().toString(36).slice(-8);
   };
 
   const handleSave = () => {

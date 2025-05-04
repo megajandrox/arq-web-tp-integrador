@@ -23,7 +23,7 @@ def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 
 client = TestClient(app)
-BASE_URI = "/api"  # Base URI para todos los endpoints
+BASE_URI = "/api"
 
 @pytest.fixture
 def setup_test_data():

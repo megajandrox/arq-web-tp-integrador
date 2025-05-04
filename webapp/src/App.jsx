@@ -10,9 +10,10 @@ import PermissionList from './features/permissions/PermissionList';
 import NewPermission from './features/permissions/NewPermission';
 import EditPermission from './features/permissions/EditPermission';
 import EditUser from './features/users/EditUser';
-import NewUser from './features/users/NewUser'; // Importar el componente de creación de usuario
-import AssignRoles from './features/users/AssignRoles'; // Importar el nuevo componente
-import AssignPermissions from './features/roles/AssignPermissions'; // Importar el nuevo componente
+import NewUser from './features/users/NewUser';
+import AssignRoles from './features/users/AssignRoles';
+import AssignPermissions from './features/roles/AssignPermissions';
+import Reports from './features/reports/Reports';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import './App.css';
 
@@ -29,7 +30,7 @@ const theme = createTheme({
 
 function App() {
   const [selectedSection, setSelectedSection] = useState('users');
-  const [loggedInUser] = useState('admin@example.com'); // Simulación de usuario logueado
+  const [loggedInUser] = useState('admin@example.com'); 
 
   const renderContent = () => {
     switch (selectedSection) {
@@ -79,6 +80,7 @@ function App() {
                 <Route path="/permissions/new" element={<NewPermission />} />
                 <Route path="/permissions/edit/:id" element={<EditPermission />} />
                 <Route path="/roles/:id/assign-permissions" element={<AssignPermissions />} />
+                <Route path="/reports" element={<Reports />} />
               </Routes>
             </main>
           </div>

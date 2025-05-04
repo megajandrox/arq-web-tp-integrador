@@ -3,8 +3,8 @@ from typing import Generic, TypeVar, List
 from fastapi import HTTPException, status
 from pydantic import BaseModel
 from api.core.models import Permission, Role, User
-from api.core.repository import BaseRepository, RoleRepository, UserRepository, UserRoleRepository
-from api.endpoints.schema import Link, PermissionCreate, PermissionResponse, RoleCreate, RoleResponse, UserCreate, UserResponse, UserUpdate
+from api.core.repository import BaseRepository, ReportsRepository, RoleRepository, UserRepository, UserRoleRepository
+from api.endpoints.schema import Link, PermissionCreate, PermissionResponse, ReportResponse, RoleCreate, RoleResponse, UserCreate, UserResponse, UserUpdate
 from api.helpers.security import hash_password
 
 ModelType = TypeVar("ModelType")
@@ -163,3 +163,21 @@ class PermissionService(BaseService[Permission, PermissionCreate]):
     def create(self, permission_in: PermissionCreate) -> PermissionResponse:
         permission = super().create(permission_in)
         return PermissionResponse.model_validate(permission)
+
+class ReportsService:
+    def __init__(self, repository: ReportsRepository):
+        self.repository = repository
+    
+    def get_report(self, report_type: str) -> ReportResponse:
+        print(f"Generando reporte de tipo {report_type}")
+        if report_type == "active_users":
+            active_users_report = self.repository.get_active_users_report()
+            return ReportResponse(active_users_report=active_users_report)
+        elif report_type == "users_by_rol":
+            users_by_role_report = self.repository.get_users_by_role_report()
+            return ReportResponse(users_by_role_report=users_by_role_report)
+        elif report_type == "users_without_rol":
+            users_without_roles_report = self.repository.get_users_without_roles_report()
+            return ReportResponse(users_without_roles_report=users_without_roles_report)
+        else:
+            raise ValueError("Tipo de reporte no válido")

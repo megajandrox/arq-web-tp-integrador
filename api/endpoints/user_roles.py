@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from api.core.database import get_db
-from api.core.models import Role, User
-from api.core.repository import RoleRepository, UserRepository, UserRoleRepository
+from api.core.repository import UserRoleRepository
 from api.core.services import RoleService, UserRoleService, UserService
 from api.endpoints.roles import get_role_service
 from api.endpoints.schema import RoleResponse, RoleUsersResponse, UserResponse, UserRoleAssign, UserRolesResponse

@@ -20,10 +20,10 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
-import GroupAddIcon from '@mui/icons-material/GroupAdd'; // Icono para agregar roles
-import MoreVertIcon from '@mui/icons-material/MoreVert'; // Icono de tres puntos
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'; // Ícono de check
-import CancelIcon from '@mui/icons-material/Cancel'; // Ícono de cruz
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 import '@/styles/TableStyles.css';
 import ConfirmDeleteDialog from '@/components/ConfirmDeleteDialog';
 import CustomTableFooter from '@/components/CustomTableFooter';
@@ -34,8 +34,8 @@ function UserList() {
   const [error, setError] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [menuAnchor, setMenuAnchor] = useState(null); // Estado para controlar el menú desplegable
-  const [menuUser, setMenuUser] = useState(null); // Usuario seleccionado para el menú
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const [menuUser, setMenuUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -144,9 +144,9 @@ function UserList() {
                 <TableCell>{user.email}</TableCell>
                 <TableCell align="center">
                   {user.is_active ? (
-                    <CheckCircleIcon color="success" /> // Ícono verde para activo
+                    <CheckCircleIcon color="success" />
                   ) : (
-                    <CancelIcon color="error" /> // Ícono rojo para inactivo
+                    <CancelIcon color="error" />
                   )}
                 </TableCell>
                 <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>

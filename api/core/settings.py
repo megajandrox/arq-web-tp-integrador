@@ -2,7 +2,6 @@ from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 import os
 
-# Cargar variables del archivo .env
 load_dotenv()
 
 class Settings(BaseSettings):

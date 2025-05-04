@@ -24,7 +24,7 @@ function PermissionList() {
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Hook para la navegación
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     fetch('/api/permissions')
@@ -79,7 +79,7 @@ function PermissionList() {
             variant="contained"
             color="primary"
             startIcon={<AddIcon />}
-            onClick={() => navigate('/permissions/new')} // Navegar a NewPermission.jsx
+            onClick={() => navigate('/permissions/new')}
           >
             Nuevo Permiso
           </Button>
@@ -108,7 +108,7 @@ function PermissionList() {
                         variant="contained"
                         color="primary"
                         startIcon={<EditIcon />}
-                        onClick={() => navigate(`/permissions/edit/${permission.id}`)} // Navegar a EditPermission.jsx
+                        onClick={() => navigate(`/permissions/edit/${permission.id}`)}
                         style={{ marginRight: '8px' }}
                       >
                       </Button>
@@ -118,7 +118,7 @@ function PermissionList() {
                         variant="outlined"
                         color="error"
                         startIcon={<DeleteIcon />}
-                        onClick={() => handleDelete(permission.id)} // Llamar a la función handleDelete
+                        onClick={() => handleDelete(permission.id)}
                       >
                       </Button>
                     </Tooltip>

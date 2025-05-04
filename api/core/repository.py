@@ -2,7 +2,7 @@ from typing import Generic, Type, TypeVar, List, Optional
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from api.core.models import Permission, Role, User
-from api.endpoints.schema import PermissionCreate, RoleCreate, UserCreate
+from api.endpoints.schema import ActiveUsersReport, PermissionCreate, RoleCreate, UserCreate, UsersByRoleReport, UsersWithoutRolesReport
 from api.core.models import user_roles, role_permissions
 from sqlalchemy import insert, delete
 
@@ -121,3 +121,37 @@ class PermissionRepository(BaseRepository[Permission, PermissionCreate]):
         self.db.delete(permission)
         self.db.commit()
         return True
+
+class ReportsRepository:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def get_active_users_report(self) -> ActiveUsersReport:
+        print("Generating active users report...")
+        active_users = self.db.query(User).filter(User.is_active == 1).count()
+        inactive_users = self.db.query(User).filter(User.is_active == 0).count()
+        total_users = active_users + inactive_users
+        print(f"Active users: {active_users}, Inactive users: {inactive_users}, Total users: {total_users}")
+        active_percentage = (active_users / total_users) * 100 if total_users > 0 else 0
+        return ActiveUsersReport(
+            active_users=active_users,
+            inactive_users=inactive_users,
+            active_percentage=round(active_percentage, 2)
+        )
+
+    def get_users_by_role_report(self) -> list[UsersByRoleReport]:
+        print("Generating users by role report...")
+        roles = self.db.query(Role).all()
+        result = []
+        for role in roles:
+            print(f"Processing role: {role.name}")
+            user_count = self.db.query(user_roles).filter(user_roles.c.role_id == role.id).count()
+            result.append(UsersByRoleReport(role_name=role.name, user_count=user_count))
+        return result
+
+    def get_users_without_roles_report(self) -> list[UsersWithoutRolesReport]:
+        users_without_roles = self.db.query(User).outerjoin(user_roles, User.id == user_roles.c.user_id).filter(user_roles.c.role_id == None).all()
+        return [
+            UsersWithoutRolesReport(user_id=user.id, username=user.username, email=user.email)
+            for user in users_without_roles
+        ]

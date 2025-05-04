@@ -74,3 +74,23 @@ class RoleUsersResponse(BaseModel):
     role_id: int
     users: List[UserResponse]
     model_config = ConfigDict(from_attributes=True)
+
+
+class ActiveUsersReport(BaseModel):
+    active_users: int
+    inactive_users: int
+    active_percentage: float
+
+class UsersByRoleReport(BaseModel):
+    role_name: str
+    user_count: int
+
+class UsersWithoutRolesReport(BaseModel):
+    user_id: int
+    username: str
+    email: str
+
+class ReportResponse(BaseModel):
+    active_users_report: Optional[ActiveUsersReport] = None
+    users_by_role_report: Optional[List[UsersByRoleReport]] = None
+    users_without_roles_report: Optional[List[UsersWithoutRolesReport]] = None
