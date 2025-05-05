@@ -18,10 +18,14 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd webapp
+          npm install
 
       - name: Build the app
-        run: npm run build
+        run: |
+          cd webapp
+          npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
