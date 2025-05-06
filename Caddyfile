@@ -5,7 +5,7 @@
 
     # Redirigir solicitudes a /api al servicio API
     handle /api/* {
-        reverse_proxy api:8000
+        reverse_proxy api:8000/api
     }
 
     # Manejar rutas no encontradas y redirigir a index.html (para SPAs)
