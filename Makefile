@@ -3,7 +3,6 @@ PYTHON = python
 DOCKER_COMPOSE = docker compose
 APP_DIR = api
 SCRIPTS_DIR = scripts
-ENV_FILE = $(APP_DIR)/.env
 DB_FILE = user_manager.db 
 
 init-db:
@@ -31,12 +30,6 @@ stop-local:
 	    echo "No se encontró el servidor en ejecución."; \
 	fi
 
-check-env:
-	@if [ ! -f $(ENV_FILE) ]; then \
-	    echo "El archivo $(ENV_FILE) no existe. Por favor, crea uno antes de continuar."; \
-	    exit 1; \
-	fi
-
 clean-db:
 	@echo "Eliminando la base de datos..."
 	@if [ -f $(DB_FILE) ]; then \
@@ -46,7 +39,7 @@ clean-db:
 	    echo "No se encontró la base de datos para eliminar."; \
 	fi
 
-init-all: check-env clean-db init-db run-local-bg populate-db
+init-all: clean-db init-db run-local-bg populate-db
 	@echo "Proyecto inicializado y aplicación levantada con Docker."
 
 help:

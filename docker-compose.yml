@@ -9,3 +9,13 @@ services:
       - "9000:8000"
     volumes:
       - ./api:/app/api
+
+  web:
+    image: caddy:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./webapp/dist:/srv
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      - api

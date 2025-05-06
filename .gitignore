@@ -15,7 +15,6 @@ htmlcov/
 venv/
 .venv/
 env/
-api/.env/
 
 # Archivos de configuración específicos del entorno (¡Ten cuidado con este!)
 *.env
